@@ -11,6 +11,39 @@ new_img = pygame.transform.scale(img,(700,500))
 clock = pygame.time.Clock()
 
 finish = False
+
+class Gamesprite(pygame.sprite.Sprite):
+    def __init__(self, player_image, player_x, player_y, player_speed, width, height):
+        super().__init__()
+        self.image = pygame.transform.scale(pygame.image.load(player_image), (width, height))
+        self.rect = self.image.get_rect()
+        self.rect.x = player_x
+        self.rect.y = player_y
+        self.speed = player_speed
+
+    def reset(self):
+        window.blit(self.image, (self.rect.x, self.rect.y))
+
+class Player(Gamesprite):
+    def update_r(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP] and self.rect.y > 0:
+            self.rect.y -= self.speed
+        if keys[pygame.K_DOWN] and self.rect.y <= 500-60:
+            self.rect.y += self.speed
+
+    def update_l(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w] and self.rect.y > 0:
+            self.rect.y -= self.speed
+        if keys[pygame.K_s] and self.rect.y <= 500-60:
+            self.rect.y += self.speed
+
+
+racket1 = Player('racket-Photoroom.png', 10, 0, 10, 90, 100)
+racket2 = Player('racket-Photoroom.png', 610, 0, 10, 90, 100)
+ball = Gamesprite('ball-Photoroom.png', 300, 200, 4, 50, 50)
+
 while True:
     for event in pygame.event.get(): 
         if event.type == pygame.QUIT:
@@ -18,5 +51,10 @@ while True:
     if not finish:
         window.fill(WHITE)
         window.blit(new_img,(0,0))
+        racket1.reset()
+        racket2.reset()
+        racket1.update_l()
+        racket2.update_r()
+        ball.reset()
         pygame.display.update()
     clock.tick(60)
